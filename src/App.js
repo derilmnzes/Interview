@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import "./Css/Main.css";
+import { useContext, useState } from "react";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  Outlet,
+  RouterProvider,
+} from "react-router-dom";
+import CategoriesList, { categoryListLoader } from "./Pages/CategoriesList";
+import Layout, { categoryloader } from "./Layout/Layout";
+import ProductDetail, { productDetailLoader } from "./Pages/ProductDetail";
+const errorElement = (
+  <div className="error">
+  Please try again,Something went wrong
+</div>
+)
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/"
+      element={
+        <div>
+          <Layout />
+          <Outlet />
+        </div>
+      }
+      errorElement={errorElement}
+      loader={categoryloader}
+    >
+      <Route errorElement={errorElement} index loader={categoryListLoader} element={<CategoriesList />} />
+      <Route
+        index
+        path="/:category/:id"
+        loader={productDetailLoader}
+        element={<ProductDetail />}
+        errorElement={errorElement}
+      />
+    </Route>
+  )
+);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
